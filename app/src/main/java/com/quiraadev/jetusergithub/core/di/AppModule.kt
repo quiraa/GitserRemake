@@ -26,7 +26,7 @@ object AppModule {
     fun provideApi(): ApiService {
         val authInterceptor = Interceptor { chain ->
             val requestHeader = chain.request().newBuilder()
-                .addHeader("Authorization", "token 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")
+                .addHeader("Authorization", "token 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")
                 .build()
             chain.proceed(requestHeader)
         }
@@ -46,17 +46,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext application: Application
-    ): FavoriteDatabase {
-        return Room.databaseBuilder(
-            application,
+        @ApplicationContext context: Context
+    ): FavoriteDatabase =
+        Room.databaseBuilder(
+            context,
             FavoriteDatabase::class.java,
             "favorite.db"
         ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
-    }
+
 
     @Provides
-    fun provideDao(
-        database: FavoriteDatabase
-    ): FavoriteDao = database.dao
+    fun provideDao(database: FavoriteDatabase): FavoriteDao = database.dao
 }

@@ -14,5 +14,5 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideRepository(dao: FavoriteDao) = Repository(dao)
+    fun provideRepository(dao: FavoriteDao): Repository = Repository(dao)
 }

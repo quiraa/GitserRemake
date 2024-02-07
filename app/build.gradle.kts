@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -69,16 +69,24 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-//   * Compose Destination
-    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
+    implementation("androidx.compose.material3:material3:1.2.0-rc01")
+
+//   * Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.2")
+
+//   * Accompanist
+    val accompanist_version = "0.28.0"
+    implementation("com.google.accompanist:accompanist-pager:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
 
 //   * Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    ksp("com.google.dagger:hilt-android-compiler:2.44")
+    val hilt_version = "2.48.1"
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    ksp("com.google.dagger:hilt-android-compiler:$hilt_version")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
 //    * Room Database
-    val room_version = "2.6.1"
+    val room_version = "2.6.0"
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
@@ -97,7 +105,7 @@ dependencies {
 //    * Kotpref
     implementation("com.chibatching.kotpref:kotpref:2.13.1")
 
-////    * Pager
+//    * Pager
 //    val accompanist_version = "0.28.0"
 //    implementation("com.google.accompanist:accompanist-pager:$accompanist_version") // Pager
 //    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version") // Pager Indicators
