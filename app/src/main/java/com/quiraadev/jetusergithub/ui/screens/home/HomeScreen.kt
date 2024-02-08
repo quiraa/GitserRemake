@@ -29,11 +29,17 @@ fun HomeScreen(
 
     LaunchedEffect(key1 = true) {
         homeViewModel.getListUser()
+        homeViewModel.setQuery("")
     }
 
     return homeViewModel.allUserState.collectAsState(ResultState.Loading).value.let { state ->
         when (state) {
-            is ResultState.Error -> ErrorContent(message = state.errorMessage)
+            is ResultState.Error -> ErrorContent(
+                message = state.errorMessage,
+                callbackRefresh = {
+                    homeViewModel.getListUser()
+                }
+            )
             is ResultState.Loading -> LoadingContent()
             is ResultState.Success -> {
                 HomeContent(

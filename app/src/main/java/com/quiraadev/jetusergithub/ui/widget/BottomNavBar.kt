@@ -13,30 +13,36 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.quiraadev.jetusergithub.ui.navigations.Screen
 
 @Composable
 fun BottomNavBar(
-    navController: NavHostController
+    navController: NavHostController,
 ) {
-    var selectedItemIndex by remember { mutableIntStateOf(0) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    var currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar {
-        items.forEachIndexed { index, items ->
+        items.map {  items ->
             NavigationBarItem(
-                selected = selectedItemIndex == index,
+                selected = currentRoute == items.screen.route,
                 onClick = {
-                    selectedItemIndex = index
-                    Screen.pushAndReplace(navController, items.screen)
+                    currentRoute = items.screen.route
+                    navController.navigate(items.screen.route) {
+                        popUpTo(navController.graph.id) {
+                            saveState = true
+                            inclusive = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
+                    }
                 },
                 icon = {
                     val icon =
-                        if (selectedItemIndex == index) items.selectedIcon else items.unselectedIcon
+                        if (currentRoute == items.screen.route) items.selectedIcon else items.unselectedIcon
                     Icon(imageVector = icon, contentDescription = "Nav Icon")
                 },
                 label = {

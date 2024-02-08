@@ -3,10 +3,6 @@ package com.quiraadev.jetusergithub.core.data.remote
 import com.quiraadev.jetusergithub.core.data.remote.response.DetailUserResponse
 import com.quiraadev.jetusergithub.core.data.remote.response.ListUserResponse
 import com.quiraadev.jetusergithub.core.data.remote.response.SearchUserResponse
-import com.quiraadev.jetusergithub.core.data.remote.response.UserResponseItem
-import kotlinx.coroutines.flow.Flow
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

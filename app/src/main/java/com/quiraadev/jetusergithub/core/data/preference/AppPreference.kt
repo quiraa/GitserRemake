@@ -1,4 +1,4 @@
-package com.quiraadev.jetusergithub.core.data.prefs
+package com.quiraadev.jetusergithub.core.data.preference
 
 import com.chibatching.kotpref.KotprefModel
 

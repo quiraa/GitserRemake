@@ -12,12 +12,12 @@ sealed class Screen(val route: String) {
     }
 
     companion object {
-        fun push(navController: NavHostController, screen: Screen) {
-            navController.navigate(screen.route)
+        fun push(navController: NavHostController, route: String) {
+            navController.navigate(route)
         }
 
-        fun pushAndReplace(navController: NavHostController, screen: Screen) {
-            navController.navigate(screen.route) {
+        fun pushAndReplace(navController: NavHostController, route: String) {
+            navController.navigate(route) {
                 popUpTo(navController.graph.id) {
                     inclusive = true
                 }

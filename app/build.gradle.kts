@@ -105,11 +105,6 @@ dependencies {
 //    * Kotpref
     implementation("com.chibatching.kotpref:kotpref:2.13.1")
 
-//    * Pager
-//    val accompanist_version = "0.28.0"
-//    implementation("com.google.accompanist:accompanist-pager:$accompanist_version") // Pager
-//    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version") // Pager Indicators
-
 //    * Additional
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
 }

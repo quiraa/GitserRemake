@@ -1,7 +1,7 @@
 package com.quiraadev.jetusergithub.core.di
 
 import com.quiraadev.jetusergithub.core.data.local.FavoriteDao
-import com.quiraadev.jetusergithub.core.repository.Repository
+import com.quiraadev.jetusergithub.core.data.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,5 +14,5 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideRepository(dao: FavoriteDao): Repository = Repository(dao)
+    fun provideRepository(dao: FavoriteDao) = Repository(dao)
 }

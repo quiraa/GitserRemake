@@ -1,16 +1,17 @@
 package com.quiraadev.jetusergithub.ui.widget
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,7 +57,7 @@ fun LoadingContent() {
 }
 
 @Composable
-fun ErrorContent(message: String) {
+fun ErrorContent(message: String = "", callbackRefresh: () -> Unit? = {}) {
     return Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -73,7 +74,13 @@ fun ErrorContent(message: String) {
                 text = message,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+            )
+            Text(
+                text = "Click Here to Retry",
+                modifier = Modifier
+                    .clickable { callbackRefresh() }
+                    .padding(8.dp)
             )
         }
     }

@@ -70,7 +70,8 @@ fun MainScreen(
                 DetailScreen(
                     username = username,
                     navController = navController,
-                    detailViewModel = detailViewModel
+                    detailViewModel = detailViewModel,
+                    favoriteViewModel = favoriteViewModel
                 )
             }
         }

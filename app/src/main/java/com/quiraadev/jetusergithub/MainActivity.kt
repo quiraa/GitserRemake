@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.chibatching.kotpref.Kotpref
+import com.quiraadev.jetusergithub.ui.screens.setting.SettingViewModel
 import com.quiraadev.jetusergithub.ui.theme.JetUserGithubTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         Kotpref.init(this)
         setContent {
-            JetUserGithubTheme {
+            val settingViewModel = hiltViewModel<SettingViewModel>()
+            JetUserGithubTheme(
+                darkTheme = settingViewModel.isDarkMode.value
+            ) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

@@ -1,6 +1,5 @@
 package com.quiraadev.jetusergithub.core.di
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.quiraadev.jetusergithub.core.data.local.FavoriteDao
@@ -26,7 +25,7 @@ object AppModule {
     fun provideApi(): ApiService {
         val authInterceptor = Interceptor { chain ->
             val requestHeader = chain.request().newBuilder()
-                .addHeader("Authorization", "token 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")
+                .addHeader("Authorization", "token {Use with our own github personal access token}")
                 .build()
             chain.proceed(requestHeader)
         }

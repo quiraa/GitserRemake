@@ -4,6 +4,7 @@
 
 package com.quiraadev.jetusergithub.ui.screens.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -42,16 +43,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.quiraadev.jetusergithub.core.ResultState
+import com.quiraadev.jetusergithub.core.data.local.entity.Favorite
 import com.quiraadev.jetusergithub.core.data.remote.response.DetailUserResponse
 import com.quiraadev.jetusergithub.ui.navigations.Screen
 import com.quiraadev.jetusergithub.ui.pages.FollowerPage
 import com.quiraadev.jetusergithub.ui.pages.FollowingPage
+import com.quiraadev.jetusergithub.ui.screens.favorite.FavoriteViewModel
 import com.quiraadev.jetusergithub.ui.widget.ErrorContent
 import com.quiraadev.jetusergithub.ui.widget.LoadingContent
 import kotlinx.coroutines.launch
@@ -60,7 +64,8 @@ import kotlinx.coroutines.launch
 fun DetailScreen(
     username: String,
     navController: NavHostController,
-    detailViewModel: DetailViewModel
+    detailViewModel: DetailViewModel,
+    favoriteViewModel: FavoriteViewModel
 ) {
     LaunchedEffect(key1 = true) {
         detailViewModel.getUserDetail(username)
@@ -68,14 +73,20 @@ fun DetailScreen(
 
     detailViewModel.detailUserState.collectAsState(ResultState.Loading).value.let { state ->
         when (state) {
-            is ResultState.Error -> ErrorContent(message = state.errorMessage)
+            is ResultState.Error -> ErrorContent(
+                message = state.errorMessage,
+                callbackRefresh = {
+                    detailViewModel.getUserDetail(username)
+                }
+            )
             is ResultState.Loading -> LoadingContent()
             is ResultState.Success -> {
                 val user = state.data
                 DetailContent(
                     user = user,
                     navController = navController,
-                    detailViewModel = detailViewModel
+                    detailViewModel = detailViewModel,
+                    favoriteViewModel = favoriteViewModel
                 )
             }
         }
@@ -87,11 +98,25 @@ fun DetailContent(
     user: DetailUserResponse,
     navController: NavHostController,
     detailViewModel: DetailViewModel,
+    favoriteViewModel: FavoriteViewModel
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
 
-    var checked by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    favoriteViewModel.allFavoriteUser.collectAsState(ResultState.Loading).value.let { state ->
+        when (state) {
+            is ResultState.Error -> ErrorContent(message = state.errorMessage)
+            is ResultState.Loading -> LoadingContent()
+            is ResultState.Success -> {
+                val favorites = state.data
+                isFavorite = favorites.any { it.id == user.id }
+            }
+        }
+    }
 
     LaunchedEffect(key1 = pagerState.currentPage) {
         detailViewModel.onFollowsEvent(user.login)
@@ -106,8 +131,6 @@ fun DetailContent(
         ) { FollowingPage(navController = navController, detailViewModel = detailViewModel) }
     )
 
-
-
     when (pagerState.currentPage) {
         0 -> detailViewModel.setFollowsEvent(DetailEvent.OnFollower)
         1 -> detailViewModel.setFollowsEvent(DetailEvent.OnFollowing)
@@ -119,7 +142,9 @@ fun DetailContent(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
             IconButton(
                 modifier = Modifier
@@ -137,13 +162,31 @@ fun DetailContent(
             }
             Spacer(modifier = Modifier.weight(1f))
             IconToggleButton(
-                checked = checked,
-                onCheckedChange = { _checked ->
-                    checked = _checked
-                    detailViewModel.updateFavoriteUser(user.id, checked)
+                checked = isFavorite,
+                onCheckedChange = { isChecked ->
+                    isFavorite = isChecked
+                    if (isChecked) {
+                        favoriteViewModel.insertFavorite(
+                            Favorite(
+                                id = user.id,
+                                avatarUrl = user.avatarUrl,
+                                login = user.login
+                            )
+                        )
+                        Toast.makeText(context, "User Added", Toast.LENGTH_SHORT).show()
+                    } else {
+                        favoriteViewModel.deleteFavorite(
+                            Favorite(
+                                id = user.id,
+                                avatarUrl = user.avatarUrl,
+                                login = user.login
+                            )
+                        )
+                        Toast.makeText(context, "User Deleted", Toast.LENGTH_SHORT).show()
+                    }
                 }
             ) {
-                val icon = if (checked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
+                val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
                 Icon(
                     imageVector = icon,
                     contentDescription = "Favorite Icon",

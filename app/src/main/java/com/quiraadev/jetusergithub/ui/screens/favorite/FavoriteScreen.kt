@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.quiraadev.jetusergithub.core.ResultState
 import com.quiraadev.jetusergithub.core.data.local.entity.Favorite
+import com.quiraadev.jetusergithub.ui.navigations.Screen
 import com.quiraadev.jetusergithub.ui.widget.AvailableFavoriteContent
 import com.quiraadev.jetusergithub.ui.widget.EmptyContent
 import com.quiraadev.jetusergithub.ui.widget.ErrorContent
@@ -20,11 +21,17 @@ fun FavoriteScreen(
             is ResultState.Error -> ErrorContent(message = state.errorMessage)
             is ResultState.Loading -> LoadingContent()
             is ResultState.Success -> {
-                val favorites = state.data
                 FavoriteContent(
-                    listFavorites = favorites,
-                    navController = navController,
-                    onUpdateFavoriteUser = favoriteViewModel::updateFavoriteUser
+                    listFavorites = state.data,
+                    onClickUser = { username ->
+                        Screen.push(navController, Screen.Detail.createRoute(username))
+                    },
+                    onDeleteClick = { favorite ->
+                        favoriteViewModel.deleteFavorite(favorite)
+                    },
+                    onClearFavorite = {
+                        favoriteViewModel.deleteAllFavorite()
+                    }
                 )
             }
         }
@@ -34,15 +41,17 @@ fun FavoriteScreen(
 @Composable
 fun FavoriteContent(
     listFavorites: List<Favorite>,
-    navController: NavHostController,
-    onUpdateFavoriteUser: (id: Int, isFavorite: Boolean) -> Unit
+    onClickUser: (username: String) -> Unit,
+    onDeleteClick: (Favorite) -> Unit,
+    onClearFavorite: () -> Unit,
 ) {
     return when (listFavorites.isEmpty()) {
         true -> EmptyContent()
         false -> AvailableFavoriteContent(
             favorites = listFavorites,
-            navController = navController,
-            onUpdateFavoriteUser = onUpdateFavoriteUser
+            onClickUser = onClickUser,
+            onDeleteClick = onDeleteClick,
+            onClearFavorite = onClearFavorite
         )
     }
 }

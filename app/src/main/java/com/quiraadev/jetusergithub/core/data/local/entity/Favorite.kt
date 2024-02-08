@@ -8,6 +8,5 @@ data class Favorite(
     @PrimaryKey
     val id: Int,
     val avatarUrl: String,
-    val login: String,
-    val isFavorite: Boolean = false
+    val login: String
 )

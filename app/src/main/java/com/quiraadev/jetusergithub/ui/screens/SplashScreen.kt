@@ -29,7 +29,7 @@ fun SplashScreen(
 ) {
     LaunchedEffect(key1 = true) {
         delay(1800)
-        Screen.pushAndReplace(navController, Screen.Home)
+        Screen.pushAndReplace(navController, Screen.Home.route)
     }
 
     return Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -39,7 +39,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = painterResource(id = R.drawable.gitser),
                 contentDescription = "App Icon",
                 modifier = Modifier.size(86.dp).clip(CircleShape)
             )

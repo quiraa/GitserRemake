@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -27,23 +28,38 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.quiraadev.jetusergithub.core.data.local.entity.Favorite
-import com.quiraadev.jetusergithub.ui.navigations.Screen
 
 @Composable
 fun AvailableFavoriteContent(
     favorites: List<Favorite>,
-    navController: NavHostController,
-    onUpdateFavoriteUser: (id: Int, isFavorite: Boolean) -> Unit
+    onClickUser: (username: String) -> Unit,
+    onDeleteClick: (Favorite) -> Unit,
+    onClearFavorite: () -> Unit
 ) {
     return LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Delete All Favorite", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = {
+                    onClearFavorite()
+                }) {
+                    Icon(imageVector = Icons.Filled.Clear, contentDescription = "Clear Icon", tint = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
         items(items = favorites, key = { it.id }) { favorite ->
             FavoriteCard(
                 favoriteUser = favorite,
-                navController = navController,
-                onUpdateFavoriteUser = onUpdateFavoriteUser
+                onClickUser = onClickUser,
+                onDeleteClick = onDeleteClick
             )
         }
         item {
@@ -63,8 +79,8 @@ fun AvailableFavoriteContent(
 @Composable
 fun FavoriteCard(
     favoriteUser: Favorite,
-    navController: NavHostController,
-    onUpdateFavoriteUser: (id: Int, isFavorite: Boolean) -> Unit
+    onClickUser: (username: String) -> Unit,
+    onDeleteClick: (Favorite) -> Unit
 ) {
     val (id, photoUrl, login) = favoriteUser
 
@@ -73,7 +89,7 @@ fun FavoriteCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         onClick = {
-            navController.navigate(Screen.Detail.createRoute(favoriteUser.login))
+            onClickUser(favoriteUser.login)
         }
     ) {
         Row(
@@ -107,7 +123,7 @@ fun FavoriteCard(
                 )
             }
             IconButton(onClick = {
-                onUpdateFavoriteUser(favoriteUser.id, favoriteUser.isFavorite)
+                onDeleteClick(favoriteUser)
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Delete,

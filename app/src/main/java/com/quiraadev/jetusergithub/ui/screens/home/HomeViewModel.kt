@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.quiraadev.jetusergithub.core.ResultState
 import com.quiraadev.jetusergithub.core.data.remote.ApiService
 import com.quiraadev.jetusergithub.core.data.remote.response.ListUserResponse
+import com.quiraadev.jetusergithub.utils.errorParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ class HomeViewModel @Inject constructor(
                 val response = api.fetchListUser()
                 _allUserState.value = ResultState.Success(response)
             } catch (e: Exception) {
-                _allUserState.value = ResultState.Error(e.localizedMessage)
+                _allUserState.value = ResultState.Error(errorParser(e))
             }
         }
 
@@ -43,7 +44,7 @@ class HomeViewModel @Inject constructor(
                 val response = api.searchUser(query)
                 _allUserState.value = ResultState.Success(response.items)
             } catch (e: Exception) {
-                _allUserState.value = ResultState.Error(e.localizedMessage)
+                _allUserState.value = ResultState.Error(errorParser(e))
             }
         }
     }
