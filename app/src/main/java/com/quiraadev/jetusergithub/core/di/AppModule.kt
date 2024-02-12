@@ -25,7 +25,7 @@ object AppModule {
     fun provideApi(): ApiService {
         val authInterceptor = Interceptor { chain ->
             val requestHeader = chain.request().newBuilder()
-                .addHeader("Authorization", "token {Use with our own github personal access token}")
+                .addHeader("Authorization", "token {Use with your own github personal access token}")
                 .build()
             chain.proceed(requestHeader)
         }
